@@ -22,25 +22,18 @@ function getValue(item) {
   return item.value ?? item.text ?? item.content ?? item.description ?? "";
 }
 
-export default function MetaGrid({ items = [] }) {
+export default function MetaGrid({ isVisible = false, items = [] }) {
   const normalizedItems = normalizeItems(items);
   const [isAnimated, setIsAnimated] = useState(false);
 
   useEffect(() => {
-    const onKeyDown = (event) => {
-      if (event.code !== "Space") return;
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation?.();
-      setIsAnimated(false);
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => setIsAnimated(true));
-      });
-    };
+    if (!isVisible) return;
 
-    window.addEventListener("keydown", onKeyDown, true);
-    return () => window.removeEventListener("keydown", onKeyDown, true);
-  }, []);
+    setIsAnimated(false);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => setIsAnimated(true));
+    });
+  }, [isVisible]);
 
   return (
     <section

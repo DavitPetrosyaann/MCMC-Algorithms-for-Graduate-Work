@@ -83,7 +83,6 @@ function runSteps(current, count) {
 export default function MarkovChain() {
   const [sim, setSim] = useState(() => createInitialState("v"));
   const [autoRunning, setAutoRunning] = useState(false);
-  const [speed, setSpeed] = useState(5);
 
   const stats = useMemo(() => {
     const pV = sim.total > 0 ? (sim.counts.v / sim.total) * 100 : 0;
@@ -106,10 +105,10 @@ export default function MarkovChain() {
 
     const interval = window.setInterval(() => {
       setSim((current) => applyStep(current));
-    }, Math.max(20, 500 / speed));
+    }, 120);
 
     return () => window.clearInterval(interval);
-  }, [autoRunning, speed]);
+  }, [autoRunning]);
 
   function setStart(startState) {
     setAutoRunning(false);
@@ -154,9 +153,6 @@ export default function MarkovChain() {
             <button className="markov-btn" type="button" onClick={() => setSim((current) => runSteps(current, 100))}>
               +100 քայլ
             </button>
-            <button className="markov-btn" type="button" onClick={() => setSim((current) => runSteps(current, 1000))}>
-              +1000 քայլ
-            </button>
             <button
               className={autoRunning ? "markov-btn markov-btn--active" : "markov-btn"}
               type="button"
@@ -167,18 +163,6 @@ export default function MarkovChain() {
             <button className="markov-btn markov-btn--reset" type="button" onClick={resetSim}>
               ↺ Զրոյացնել
             </button>
-            <div className="markov-speed-buttons" aria-label="Auto run speed">
-              {[1, 5, 20, 50].map((value) => (
-                <button
-                  className={speed === value ? "markov-speed-btn active" : "markov-speed-btn"}
-                  key={value}
-                  type="button"
-                  onClick={() => setSpeed(value)}
-                >
-                  {value}x
-                </button>
-              ))}
-            </div>
           </div>
 
           <div className="markov-start">

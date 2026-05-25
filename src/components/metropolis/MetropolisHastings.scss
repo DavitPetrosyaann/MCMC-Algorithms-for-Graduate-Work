@@ -53,6 +53,41 @@
   line-height: 1.35;
 }
 
+.mh-inline-math {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.08em;
+  white-space: nowrap;
+  color: #d8d6e6;
+  font-family: "Times New Roman", Georgia, serif;
+  font-size: 1.08em;
+  font-weight: 600;
+}
+
+.mh-inline-math sup {
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.mh-frac-inline {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  margin: 0 0.14em;
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.mh-frac-inline__top {
+  padding: 0 0.22em 0.08em;
+  border-bottom: 1px solid currentColor;
+}
+
+.mh-frac-inline__bottom {
+  padding: 0.08em 0.22em 0;
+}
+
 .mh-badge {
   margin-top: 2px;
   padding: 4px 10px;
@@ -67,7 +102,7 @@
 .mh-grid {
   min-height: 0;
   display: grid;
-  grid-template-columns: 205px minmax(0, 1fr) 310px;
+  grid-template-columns: 205px minmax(0, 1fr);
   gap: 0.55rem;
   padding: 0.55rem;
   overflow: hidden;

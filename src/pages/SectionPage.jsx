@@ -1,98 +1,68 @@
-import HMC from "../components/hmc/HMC.jsx";
-import MarkovChain from "../components/markov/MarkovSuite.jsx";
-import IntroMcmcSlide from "../components/intro/IntroMcmcSlide.jsx";
-import HistoryTimelineSlide from "../components/history/HistoryTimelineSlide.jsx";
-import McmcPrinciplesSlide from "../components/principles/McmcPrinciplesSlide.jsx";
-import MetropolisIntroSlide from "../components/metropolisIntro/MetropolisIntroSlide.jsx";
-import GibbsIntroSlide from "../components/gibbsIntro/GibbsIntroSlide.jsx";
 import MhVsGibbsSlide from "../components/comparison/MhVsGibbsSlide.jsx";
-import HmcIntroSlide from "../components/hmcIntro/HmcIntroSlide.jsx";
 import ConclusionSlide from "../components/conclusion/ConclusionSlide.jsx";
-import ReferencesThanksSlide from "../components/references/ReferencesThanksSlide.jsx";
+import GibbsIntroSlide from "../components/gibbsIntro/GibbsIntroSlide.jsx";
+import HMC from "../components/hmc/HMC.jsx";
+import HmcIntroSlide from "../components/hmcIntro/HmcIntroSlide.jsx";
+import HistoryTimelineSlide from "../components/history/HistoryTimelineSlide.jsx";
+import IntroMcmcSlide from "../components/intro/IntroMcmcSlide.jsx";
+import MarkovChain from "../components/markov/MarkovSuite.jsx";
+import MetropolisIntroSlide from "../components/metropolisIntro/MetropolisIntroSlide.jsx";
 import MetropolisSuite from "../components/metropolis/MetropolisSuite.jsx";
 import MonteCarloLab from "../components/montecarlo/MonteCarloLab.jsx";
+import McmcPrinciplesSlide from "../components/principles/McmcPrinciplesSlide.jsx";
+import ReferencesThanksSlide from "../components/references/ReferencesThanksSlide.jsx";
 import GibbsSimulationPage from "./GibbsSimulationPage.jsx";
 
+const slideComponents = {
+  1: IntroMcmcSlide,
+  2: HistoryTimelineSlide,
+  5: McmcPrinciplesSlide,
+  6: MetropolisIntroSlide,
+  8: GibbsIntroSlide,
+  10: MhVsGibbsSlide,
+  11: HmcIntroSlide,
+  13: ConclusionSlide,
+  14: ReferencesThanksSlide,
+};
+
+const visualizerComponents = {
+  3: MarkovChain,
+  4: MonteCarloLab,
+  7: MetropolisSuite,
+  9: GibbsSimulationPage,
+  12: HMC,
+};
+
+function SlideAnchor({ children, className = "", slide }) {
+  return (
+    <section
+      className={["slide-anchor", className].filter(Boolean).join(" ")}
+      data-slide-number={slide.number}
+      id={slide.id}
+    >
+      {children}
+    </section>
+  );
+}
+
 export default function SectionPage({ slide }) {
-  if (slide?.title?.includes("Ներածություն")) {
-    return <IntroMcmcSlide />;
-  }
+  const Visualizer = visualizerComponents[slide.number];
 
-  if (slide?.title?.includes("Պատմական Ակնարկ")) {
-    return <HistoryTimelineSlide />;
-  }
-
-  if (slide?.title?.includes("MCMC Ընդհանուր Սկզբունքներ")) {
-    return <McmcPrinciplesSlide />;
-  }
-
-  if (slide?.title?.includes("Metropolis-Hastings ներածություն")) {
-    return <MetropolisIntroSlide />;
-  }
-
-  if (slide?.title?.includes("Gibbs Sampling ներածություն")) {
-    return <GibbsIntroSlide />;
-  }
-
-  if (slide?.title?.includes("MH vs Gibbs")) {
-    return <MhVsGibbsSlide />;
-  }
-
-  if (slide?.title?.includes("Hamiltonian Monte Carlo ներածություն")) {
-    return <HmcIntroSlide />;
-  }
-
-  if (slide?.title?.includes("Եզրակացություն")) {
-    return <ConclusionSlide />;
-  }
-
-  if (slide?.title?.includes("Գրականության ցանկ")) {
-    return <ReferencesThanksSlide />;
-  }
-
-  const isGibbsSimulation = slide.title.includes("Gibbs Sampling Algorithm Simulation");
-  const isHmcSimulation = slide.title.includes("HMC Algorithm Simulation");
-  const isMarkovChains = slide.title.includes("Մարկովյան Շղթաներ");
-  const isMetropolisSimulation = slide.title.includes("Metropolis-Hastings Algorithm Simulation");
-  const isMonteCarloMethod = slide.title.includes("Մոնտե Կառլո Մեթոդ");
-
-  if (isMarkovChains) {
+  if (Visualizer) {
     return (
-      <section className="section-slide section-slide--visualizer" id={slide.id}>
-        <MarkovChain />
-      </section>
+      <SlideAnchor className="section-slide--visualizer" slide={slide}>
+        <Visualizer />
+      </SlideAnchor>
     );
   }
 
-  if (isMetropolisSimulation) {
-    return (
-      <section className="section-slide section-slide--visualizer" id={slide.id}>
-          <MetropolisSuite />
-      </section>
-    );
-  }
+  const CustomSlide = slideComponents[slide.number];
 
-  if (isMonteCarloMethod) {
+  if (CustomSlide) {
     return (
-      <section className="section-slide section-slide--visualizer" id={slide.id}>
-        <MonteCarloLab />
-      </section>
-    );
-  }
-
-  if (isGibbsSimulation) {
-    return (
-      <section className="section-slide section-slide--visualizer" id={slide.id}>
-        <GibbsSimulationPage />
-      </section>
-    );
-  }
-
-  if (isHmcSimulation) {
-    return (
-      <section className="section-slide section-slide--visualizer" id={slide.id}>
-        <HMC />
-      </section>
+      <SlideAnchor slide={slide}>
+        <CustomSlide />
+      </SlideAnchor>
     );
   }
 

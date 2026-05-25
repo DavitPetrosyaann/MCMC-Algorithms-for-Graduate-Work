@@ -34,13 +34,16 @@ function buildHistogram(samples, bins, xmin, xmax) {
   const n = Math.max(1, samples.length);
 
   return {
-    centers: Array.from({ length: bins }, (_, i) => +(xmin + (i + 0.5) * width).toFixed(3)),
+    centers: Array.from(
+      { length: bins },
+      (_, i) => +(xmin + (i + 0.5) * width).toFixed(3),
+    ),
     densities: counts.map((count) => count / (n * width)),
   };
 }
 
 function logTarget(x) {
-  return -0.5 * (x * x - 4) ** 2;
+  return -0.5 * Math.pow(x * x - 4, 2);
 }
 
 function targetPDF(x) {
@@ -83,34 +86,53 @@ export default function MetropolisHastings() {
     setRunning(false);
   }, []);
 
-  const updateCharts = useCallback((burnSamples, postSamples, totalIter, burnIn) => {
-    const traceChart = traceChartRef.current;
-    const histChart = histChartRef.current;
-    if (!traceChart || !histChart) return;
+  const updateCharts = useCallback(
+    (burnSamples, postSamples, totalIter, burnIn) => {
+      const traceChart = traceChartRef.current;
+      const histChart = histChartRef.current;
+      if (!traceChart || !histChart) return;
 
-    const maxTrace = 3000;
-    const allTrace = [...burnSamples, ...postSamples].slice(-maxTrace);
-    const overflow = burnSamples.length + postSamples.length - maxTrace;
-    const splitAt = Math.max(0, burnSamples.length - Math.max(0, overflow));
-    const burnSlice = allTrace.slice(0, Math.min(splitAt, burnSamples.length));
-    const postSlice = allTrace.slice(burnSlice.length);
-    const firstLabel = Math.max(0, totalIter - maxTrace);
+      const maxTrace = 3000;
+      const allTrace = [...burnSamples, ...postSamples].slice(-maxTrace);
+      const overflow = burnSamples.length + postSamples.length - maxTrace;
+      const splitAt = Math.max(0, burnSamples.length - Math.max(0, overflow));
+      const burnSlice = allTrace.slice(
+        0,
+        Math.min(splitAt, burnSamples.length),
+      );
+      const postSlice = allTrace.slice(burnSlice.length);
+      const firstLabel = Math.max(0, totalIter - maxTrace);
 
-    traceChart.data.labels = allTrace.map((_, index) => index + firstLabel);
-    traceChart.data.datasets[0].data = [...burnSlice, ...new Array(postSlice.length).fill(null)];
-    traceChart.data.datasets[1].data = [...new Array(burnSlice.length).fill(null), ...postSlice];
-    traceChart.update("none");
+      traceChart.data.labels = allTrace.map((_, index) => index + firstLabel);
+      traceChart.data.datasets[0].data = [
+        ...burnSlice,
+        ...new Array(postSlice.length).fill(null),
+      ];
+      traceChart.data.datasets[1].data = [
+        ...new Array(burnSlice.length).fill(null),
+        ...postSlice,
+      ];
+      traceChart.update("none");
 
-    setBurnProgress(totalIter > 0 ? Math.min(100, (burnIn / totalIter) * 100) : 0);
+      setBurnProgress(
+        totalIter > 0 ? Math.min(100, (burnIn / totalIter) * 100) : 0,
+      );
 
-    if (postSamples.length > 5) {
-      const { centers, densities } = buildHistogram(postSamples, 60, -5, 5);
-      histChart.data.labels = centers;
-      histChart.data.datasets[0].data = densities;
-      histChart.data.datasets[1].data = centers.map((x) => targetPDF(x));
-      histChart.update("none");
-    }
-  }, []);
+      if (postSamples.length > 0) {
+        const { centers, densities } = buildHistogram(postSamples, 60, -5, 5);
+        histChart.data.labels = centers;
+        histChart.data.datasets[0].data = densities;
+        histChart.data.datasets[1].data = centers.map((x) => targetPDF(x));
+        histChart.update("none");
+      } else {
+        histChart.data.labels = [];
+        histChart.data.datasets[0].data = [];
+        histChart.data.datasets[1].data = [];
+        histChart.update("none");
+      }
+    },
+    [],
+  );
 
   const updateStats = useCallback((postSamples, accepted, totalIter) => {
     if (!postSamples.length) {
@@ -123,7 +145,10 @@ export default function MetropolisHastings() {
 
     const n = postSamples.length;
     const mean = postSamples.reduce((sum, sample) => sum + sample, 0) / n;
-    const std = Math.sqrt(postSamples.reduce((sum, sample) => sum + (sample - mean) ** 2, 0) / n);
+    const std = Math.sqrt(
+      postSamples.reduce((sum, sample) => sum + Math.pow(sample - mean, 2), 0) /
+        n,
+    );
     const acceptRate = (accepted / totalIter) * 100;
 
     setStats({
@@ -141,77 +166,124 @@ export default function MetropolisHastings() {
     setLiveRows((current) => [row, ...current].slice(0, 14));
   }, []);
 
-  const setLastStep = useCallback((iter, x, xp, logR, alpha, u, accepted) => {
-    const row = {
-      accepted,
-      alpha: alpha.toFixed(4),
-      iter,
-      logR: logR.toFixed(4),
-      u: u.toFixed(4),
-      x: x.toFixed(4),
-      xp: xp.toFixed(4),
-    };
+  const setLastStep = useCallback(
+    (iter, x, xp, logR, alpha, u, accepted) => {
+      const row = {
+        accepted,
+        alpha: alpha.toFixed(4),
+        iter,
+        logR: logR.toFixed(4),
+        u: u.toFixed(4),
+        x: x.toFixed(4),
+        xp: xp.toFixed(4),
+      };
 
-    setStepLog(row);
-    pushLiveRow(row);
-  }, [pushLiveRow]);
+      setStepLog(row);
+      pushLiveRow(row);
+    },
+    [pushLiveRow],
+  );
 
-  const runMCMC = useCallback((animate) => {
-    stopAnim();
-    setRunning(animate);
-    setLiveRows([]);
-    resetRng(42);
+  const runMCMC = useCallback(
+    (animate) => {
+      stopAnim();
+      setRunning(animate);
+      setLiveRows([]);
+      resetRng(42);
 
-    let x = 0;
-    let accepted = 0;
-    let iter = 0;
-    const burnSamples = [];
-    const postSamples = [];
-
-    const runOneStep = () => {
-      const previousX = x;
-      const xp = x + randNorm() * params.sigma;
-      const logR = logTarget(xp) - logTarget(x);
-      const alpha = Math.min(1, Math.exp(logR));
-      const u = lcg();
-      const didAccept = u < alpha;
-
-      if (didAccept) {
-        x = xp;
-        accepted += 1;
+      if (histChartRef.current) {
+        histChartRef.current.data.labels = [];
+        histChartRef.current.data.datasets[0].data = [];
+        histChartRef.current.data.datasets[1].data = [];
+        histChartRef.current.update("none");
       }
 
-      iter += 1;
-      if (iter <= params.burnIn) burnSamples.push(x);
-      else postSamples.push(x);
+      let x = 0;
+      let accepted = 0;
+      let iter = 0;
+      const burnSamples = [];
+      const postSamples = [];
 
-      return { alpha, didAccept, logR, previousX, u, xp };
-    };
+      const runOneStep = () => {
+        const previousX = x;
+        const xp = x + randNorm() * params.sigma;
+        const logR = logTarget(xp) - logTarget(x);
+        const alpha = Math.min(1, Math.exp(logR));
+        const u = lcg();
+        const didAccept = u < alpha;
 
-    if (!animate) {
-      let last = null;
-      while (iter < params.iterations) last = runOneStep();
-      updateCharts(burnSamples, postSamples, params.iterations, params.burnIn);
-      updateStats(postSamples, accepted, params.iterations);
-      if (last) setLastStep(params.iterations, last.previousX, last.xp, last.logR, last.alpha, last.u, last.didAccept);
-      setRunning(false);
-      return;
-    }
+        if (didAccept) {
+          x = xp;
+          accepted += 1;
+        }
 
-    function tick() {
-      let last = null;
-      for (let s = 0; s < 10 && iter < params.iterations; s += 1) last = runOneStep();
+        iter += 1;
+        if (iter <= params.burnIn) burnSamples.push(x);
+        else postSamples.push(x);
 
-      updateCharts(burnSamples, postSamples, iter, params.burnIn);
-      updateStats(postSamples, accepted, iter);
-      if (last) setLastStep(iter, last.previousX, last.xp, last.logR, last.alpha, last.u, last.didAccept);
+        return { alpha, didAccept, logR, previousX, u, xp };
+      };
 
-      if (iter < params.iterations) timeoutRef.current = window.setTimeout(tick, 60);
-      else setRunning(false);
-    }
+      if (!animate) {
+        let last = null;
+        while (iter < params.iterations) last = runOneStep();
+        updateCharts(
+          burnSamples,
+          postSamples,
+          params.iterations,
+          params.burnIn,
+        );
+        updateStats(postSamples, accepted, params.iterations);
+        if (last)
+          setLastStep(
+            params.iterations,
+            last.previousX,
+            last.xp,
+            last.logR,
+            last.alpha,
+            last.u,
+            last.didAccept,
+          );
+        setRunning(false);
+        return;
+      }
 
-    timeoutRef.current = window.setTimeout(tick, 60);
-  }, [lcg, params, randNorm, resetRng, setLastStep, stopAnim, updateCharts, updateStats]);
+      function tick() {
+        let last = null;
+        for (let s = 0; s < 10 && iter < params.iterations; s += 1)
+          last = runOneStep();
+
+        updateCharts(burnSamples, postSamples, iter, params.burnIn);
+        updateStats(postSamples, accepted, iter);
+        if (last)
+          setLastStep(
+            iter,
+            last.previousX,
+            last.xp,
+            last.logR,
+            last.alpha,
+            last.u,
+            last.didAccept,
+          );
+
+        if (iter < params.iterations)
+          timeoutRef.current = window.setTimeout(tick, 60);
+        else setRunning(false);
+      }
+
+      timeoutRef.current = window.setTimeout(tick, 60);
+    },
+    [
+      lcg,
+      params,
+      randNorm,
+      resetRng,
+      setLastStep,
+      stopAnim,
+      updateCharts,
+      updateStats,
+    ],
+  );
 
   useEffect(() => {
     const gridColor = "rgba(255,255,255,0.06)";
@@ -228,15 +300,41 @@ export default function MetropolisHastings() {
       data: {
         labels: [],
         datasets: [
-          { data: [], borderColor: "rgba(245,166,35,0.6)", borderWidth: 1, pointRadius: 0, fill: false },
-          { data: [], borderColor: "#4f8ef7", backgroundColor: "rgba(79,142,247,0.07)", borderWidth: 1, pointRadius: 0, fill: true },
+          {
+            data: [],
+            borderColor: "rgba(245,166,35,0.6)",
+            borderWidth: 1,
+            pointRadius: 0,
+            fill: false,
+          },
+          {
+            data: [],
+            borderColor: "#4f8ef7",
+            backgroundColor: "rgba(79,142,247,0.07)",
+            borderWidth: 1,
+            pointRadius: 0,
+            fill: true,
+          },
         ],
       },
       options: {
         ...baseOptions,
         scales: {
-          x: { ticks: { color: tickColor, maxTicksLimit: 8, font: { family: "JetBrains Mono", size: 10 } }, grid: { color: gridColor } },
-          y: { ticks: { color: tickColor, font: { family: "JetBrains Mono", size: 10 } }, grid: { color: gridColor } },
+          x: {
+            ticks: {
+              color: tickColor,
+              maxTicksLimit: 8,
+              font: { family: "JetBrains Mono", size: 10 },
+            },
+            grid: { color: gridColor },
+          },
+          y: {
+            ticks: {
+              color: tickColor,
+              font: { family: "JetBrains Mono", size: 10 },
+            },
+            grid: { color: gridColor },
+          },
         },
       },
     });
@@ -246,23 +344,48 @@ export default function MetropolisHastings() {
       data: {
         labels: [],
         datasets: [
-          { data: [], backgroundColor: "rgba(79,142,247,0.55)", borderColor: "rgba(79,142,247,0.8)", borderWidth: 0.5, categoryPercentage: 1, barPercentage: 1 },
-          { data: [], type: "line", borderColor: "#e05c4a", borderWidth: 2.5, pointRadius: 0, fill: false, tension: 0.4 },
+          {
+            data: [],
+            backgroundColor: "rgba(79,142,247,0.55)",
+            borderColor: "rgba(79,142,247,0.8)",
+            borderWidth: 0.5,
+            categoryPercentage: 1,
+            barPercentage: 1,
+          },
+          {
+            data: [],
+            type: "line",
+            borderColor: "#e05c4a",
+            borderWidth: 2.5,
+            pointRadius: 0,
+            fill: false,
+            tension: 0.4,
+          },
         ],
       },
       options: {
         ...baseOptions,
         scales: {
-          x: { ticks: { color: tickColor, maxTicksLimit: 10, font: { family: "JetBrains Mono", size: 10 } }, grid: { color: gridColor } },
-          y: { ticks: { color: tickColor, font: { family: "JetBrains Mono", size: 10 } }, grid: { color: gridColor } },
+          x: {
+            ticks: {
+              color: tickColor,
+              maxTicksLimit: 10,
+              font: { family: "JetBrains Mono", size: 10 },
+            },
+            grid: { color: gridColor },
+          },
+          y: {
+            ticks: {
+              color: tickColor,
+              font: { family: "JetBrains Mono", size: 10 },
+            },
+            grid: { color: gridColor },
+          },
         },
       },
     });
 
-    const id = window.setTimeout(() => runMCMC(false), 100);
-
     return () => {
-      window.clearTimeout(id);
       stopAnim();
       traceChartRef.current?.destroy();
       histChartRef.current?.destroy();
@@ -279,8 +402,20 @@ export default function MetropolisHastings() {
         <div>
           <h1>Metropolis MCMC — Ստանդարտ Նորմալ Բաշխում</h1>
           <p>
-            Metropolis ձևը բիմոդալ f(x)-ից նմուշ վերցնելու համար։ Target density:
-            p(x) ∝ exp(-1/2·(x² - 4)²), peaks at x = ±2.
+            Metropolis ձևը բիմոդալ f(x)-ից նմուշ վերցնելու համար։ Target
+            density:{" "}
+            <span className="mh-inline-math">
+              p(x) ∝ e
+              <sup>
+                −(
+                <span className="mh-frac-inline">
+                  <span className="mh-frac-inline__top">1</span>
+                  <span className="mh-frac-inline__bottom">2</span>
+                </span>
+                )(x<sup>2</sup>−4)<sup>2</sup>
+              </sup>
+            </span>
+            , peaks at <span className="mh-inline-math">x = ±2</span>.
           </p>
         </div>
         <span className="mh-badge">seed = 42</span>
@@ -320,9 +455,23 @@ export default function MetropolisHastings() {
           />
 
           <div className="mh-button-group">
-            <button className="mh-run" type="button" onClick={() => runMCMC(false)}>▶ Run</button>
-            <button className="mh-anim" type="button" onClick={() => runMCMC(true)}>◎ Animate</button>
-            <button type="button" onClick={stopAnim}>■ Stop</button>
+            <button
+              className="mh-run"
+              type="button"
+              onClick={() => runMCMC(false)}
+            >
+              ▶ Run
+            </button>
+            <button
+              className="mh-anim"
+              type="button"
+              onClick={() => runMCMC(true)}
+            >
+              ◎ Animate
+            </button>
+            <button type="button" onClick={stopAnim}>
+              ■ Stop
+            </button>
           </div>
 
           <StatsPanel stats={stats} />
@@ -351,14 +500,21 @@ export default function MetropolisHastings() {
           </ChartCard>
           <LiveTable rows={liveRows} />
         </main>
-
-        <AlgorithmSteps />
       </div>
     </section>
   );
 }
 
-function ControlSlider({ hint, label, max, min, onChange, step, value, valueLabel }) {
+function ControlSlider({
+  hint,
+  label,
+  max,
+  min,
+  onChange,
+  step,
+  value,
+  valueLabel,
+}) {
   return (
     <div className="mh-control">
       <div className="mh-control__head">
@@ -386,8 +542,16 @@ function StatsPanel({ stats }) {
       <Stat label="Std" value={stats.std} />
       <Stat label="Iter" value={stats.iteration} />
       <div className="mh-accept">
-        <div><span>Accept rate</span><b className={stats.gaugeTone}>{stats.acceptRate}</b></div>
-        <div className="mh-gauge"><span className={stats.gaugeTone} style={{ width: `${stats.gauge}%` }} /></div>
+        <div>
+          <span>Accept rate</span>
+          <b className={stats.gaugeTone}>{stats.acceptRate}</b>
+        </div>
+        <div className="mh-gauge">
+          <span
+            className={stats.gaugeTone}
+            style={{ width: `${stats.gauge}%` }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -403,17 +567,19 @@ function Stat({ label, value }) {
 }
 
 function StepLog({ row }) {
-  if (!row) return <div className="mh-step-log">— Run-ը սկսելուց հետո կերևա —</div>;
+  if (!row)
+    return <div className="mh-step-log">— Run-ը սկսելուց հետո կերևա —</div>;
 
   return (
     <div className="mh-step-log">
       iter = <b>{Number(row.iter).toLocaleString()}</b>
-      <br />
-      x = <b>{row.x}</b> · x′ = <b>{row.xp}</b>
+      <br />x = <b>{row.x}</b> · x′ = <b>{row.xp}</b>
       <br />
       logR = <b>{row.logR}</b> · α = <b>{row.alpha}</b>
-      <br />
-      u = <b>{row.u}</b> → <strong className={row.accepted ? "acc" : "rej"}>{row.accepted ? "ԸՆԴՈՒՆՎԱԾ" : "ՄԵՐԺՎԱԾ"}</strong>
+      <br />u = <b>{row.u}</b> →{" "}
+      <strong className={row.accepted ? "acc" : "rej"}>
+        {row.accepted ? "ԸՆԴՈՒՆՎԱԾ" : "ՄԵՐԺՎԱԾ"}
+      </strong>
     </div>
   );
 }
@@ -422,13 +588,18 @@ function ChartCard({ burnProgress, children, legend = [], title }) {
   return (
     <section className="mh-chart-card">
       {burnProgress !== undefined && (
-        <div className="mh-burn-track"><span style={{ width: `${burnProgress}%` }} /></div>
+        <div className="mh-burn-track">
+          <span style={{ width: `${burnProgress}%` }} />
+        </div>
       )}
       <div className="mh-chart-head">
         <span>{title}</span>
         <div>
           {legend.map(([color, label]) => (
-            <em key={label}><i style={{ background: color }} />{label}</em>
+            <em key={label}>
+              <i style={{ background: color }} />
+              {label}
+            </em>
           ))}
         </div>
       </div>
@@ -440,51 +611,43 @@ function ChartCard({ burnProgress, children, legend = [], title }) {
 function LiveTable({ rows }) {
   return (
     <section className="mh-live">
-      <div className="mh-chart-head"><span>Կենդանի շղթայի վիճակ (Recent)</span></div>
+      <div className="mh-chart-head">
+        <span>Կենդանի շղթայի վիճակ (Recent)</span>
+      </div>
       <table>
         <thead>
-          <tr><th>Iter</th><th>x</th><th>x′</th><th>logR</th><th>α</th><th>u</th><th>Decision</th></tr>
+          <tr>
+            <th>Iter</th>
+            <th>x</th>
+            <th>x′</th>
+            <th>logR</th>
+            <th>α</th>
+            <th>u</th>
+            <th>Decision</th>
+          </tr>
         </thead>
         <tbody>
-          {rows.length ? rows.map((row) => (
-            <tr key={`${row.iter}-${row.u}`}>
-              <td>{row.iter}</td><td>{row.x}</td><td>{row.xp}</td><td>{row.logR}</td><td>{row.alpha}</td><td>{row.u}</td>
-              <td className={row.accepted ? "accept" : "reject"}>{row.accepted ? "✓" : "✗"}</td>
+          {rows.length ? (
+            rows.map((row) => (
+              <tr key={`${row.iter}-${row.u}`}>
+                <td>{row.iter}</td>
+                <td>{row.x}</td>
+                <td>{row.xp}</td>
+                <td>{row.logR}</td>
+                <td>{row.alpha}</td>
+                <td>{row.u}</td>
+                <td className={row.accepted ? "accept" : "reject"}>
+                  {row.accepted ? "✓" : "✗"}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7">— Սկսեք Run-ը —</td>
             </tr>
-          )) : (
-            <tr><td colSpan="7">— Սկսեք Run-ը —</td></tr>
           )}
         </tbody>
       </table>
     </section>
-  );
-}
-
-function AlgorithmSteps() {
-  const rows = [
-    ["1 (Ա)", "0", "0.5", "0.7", "0.40", "ԸՆԴՈՒՆՎԵՑ", "[0, 0.5]", true],
-    ["1 (Բ)", "0", "4.0", "0.01", "0.65", "ՄԵՐԺՎԵՑ", "[0, 0]", false],
-    ["2 (Ա)", "0.5", "0.1", "1.0", "0.99", "ԸՆԴՈՒՆՎԵՑ", "[0, 0.5, 0.1]", true],
-    ["2 (Բ)", "0", "-0.3", "0.91", "0.95", "ՄԵՐԺՎԵՑ", "[0, 0, 0]", false],
-  ];
-
-  return (
-    <aside className="mh-steps">
-      <p>Մետրոպոլիս-Հասթինգս. Քայլեր</p>
-      <table>
-        <thead>
-          <tr><th>Քայլ</th><th>x</th><th>x′</th><th>α</th><th>u</th><th>Որոշում</th><th>Շղթա</th></tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              <td>{row[0]}</td><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td><td>{row[4]}</td>
-              <td className={row[7] ? "accept" : "reject"}>{row[5]}</td><td><code>{row[6]}</code></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p>Մերժման դեպքում նոր կետը հավասարվում է հին կետին, և շղթայում թիվը կրկնվում է:</p>
-    </aside>
   );
 }

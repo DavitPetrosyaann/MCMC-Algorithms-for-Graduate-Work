@@ -2,6 +2,11 @@
   width: 100%;
 }
 
+.slide-anchor {
+  min-height: 100vh;
+  scroll-margin-top: 0;
+}
+
 .section-slide {
   min-height: 100vh;
   display: grid;
@@ -54,100 +59,4 @@
   font-size: clamp(2.6rem, 7vw, 6.5rem);
   font-weight: 400;
   line-height: 0.98;
-}
-
-.slide-nav {
-  position: fixed;
-  z-index: 20;
-  top: 50%;
-  right: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  transform: translateY(-50%);
-}
-
-.slide-nav button {
-  width: 2rem;
-  aspect-ratio: 1;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(5, 5, 10, 0.72);
-  color: var(--muted);
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  font-size: 0.72rem;
-  transition:
-    border-color 180ms ease,
-    color 180ms ease,
-    background 180ms ease,
-    transform 180ms ease;
-}
-
-.slide-nav button:hover,
-.slide-nav button.active {
-  border-color: var(--accent);
-  background: rgba(212, 168, 67, 0.14);
-  color: var(--text);
-  transform: scale(1.08);
-}
-
-.slide-controls {
-  position: fixed;
-  z-index: 30;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  gap: 0.55rem;
-}
-
-.slide-controls button {
-  width: 2.5rem;
-  aspect-ratio: 1;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(5, 5, 10, 0.76);
-  color: var(--text);
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  font-size: 1.5rem;
-  line-height: 1;
-  transition:
-    border-color 180ms ease,
-    color 180ms ease,
-    background 180ms ease,
-    opacity 180ms ease,
-    transform 180ms ease;
-}
-
-.slide-controls button:hover:not(:disabled) {
-  border-color: var(--accent);
-  background: rgba(212, 168, 67, 0.16);
-  transform: translateY(-1px);
-}
-
-.slide-controls button:disabled {
-  cursor: default;
-  opacity: 0.38;
-}
-
-@media (max-width: 760px) {
-  .slide-nav {
-    top: auto;
-    right: 50%;
-    bottom: 14px;
-    flex-direction: row;
-    max-width: calc(100vw - 24px);
-    overflow-x: auto;
-    padding: 0.35rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(5, 5, 10, 0.82);
-    transform: translateX(50%);
-  }
-
-  .slide-nav button {
-    flex: 0 0 auto;
-    width: 1.85rem;
-  }
 }

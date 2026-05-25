@@ -296,39 +296,6 @@
   color: var(--markov-c);
 }
 
-.markov-speed-buttons {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-left: 0.25rem;
-  padding-left: 0.45rem;
-  border-left: 1px solid var(--markov-border);
-}
-
-.markov-speed-btn {
-  min-width: 34px;
-  padding: 5px 8px;
-  border: 1px solid var(--markov-border);
-  border-radius: 7px;
-  background: var(--markov-bg);
-  color: var(--markov-muted);
-  cursor: pointer;
-  font-family: var(--markov-mono);
-  font-size: 0.66rem;
-  font-weight: 500;
-  transition:
-    border-color 150ms ease,
-    background 150ms ease,
-    color 150ms ease;
-}
-
-.markov-speed-btn:hover,
-.markov-speed-btn.active {
-  border-color: var(--markov-v);
-  background: rgba(124, 110, 250, 0.12);
-  color: var(--markov-v);
-}
-
 .markov-simulator {
   grid-column: 1 / -1;
   grid-row: 3;

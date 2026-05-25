@@ -175,15 +175,6 @@ export default function MetropolisIntroSlide() {
               <span className="mh-math-paren">)</span>
             </div>
           </div>
-
-          <div className="mh-intro__intuition">
-            <h2>Ինտուիցիա</h2>
-            <p>
-              Բարձր խտության կետերը հեշտ են ընդունվում, բայց ցածր խտության
-              կետերը նույնպես երբեմն ընդունվում են, որպեսզի շղթան չմնա մեկ
-              տեղում։
-            </p>
-          </div>
         </aside>
       </main>
     </section>

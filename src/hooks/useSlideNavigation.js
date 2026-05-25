@@ -8,13 +8,23 @@ export default function useSlideNavigation(slides) {
     [activeSlide, slides],
   );
 
-  const scrollToSlide = useCallback((slideId) => {
-    document.getElementById(slideId)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-    setActiveSlide(slideId);
-  }, []);
+  const scrollToSlide = useCallback(
+    (slideRef) => {
+      const slide =
+        typeof slideRef === "number"
+          ? slides[slideRef]
+          : slides.find((item) => item.id === slideRef);
+
+      if (!slide) return;
+
+      document.getElementById(slide.id)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      setActiveSlide(slide.id);
+    },
+    [slides],
+  );
 
   const goToPreviousSlide = useCallback(() => {
     const previous = slides[Math.max(0, activeIndex - 1)];
@@ -46,6 +56,15 @@ export default function useSlideNavigation(slides) {
 
     return () => observer.disconnect();
   }, [slides]);
+
+  useEffect(() => {
+    const handleNavigate = (event) => {
+      scrollToSlide(event.detail?.id ?? event.detail?.index);
+    };
+
+    window.addEventListener("slide:navigate", handleNavigate);
+    return () => window.removeEventListener("slide:navigate", handleNavigate);
+  }, [scrollToSlide]);
 
   return {
     activeIndex,

@@ -13,7 +13,7 @@ function mean(values) {
 function std(values, avg) {
   return values.length
     ? Math.sqrt(
-        values.reduce((sum, value) => sum + (value - avg) ** 2, 0) /
+        values.reduce((sum, value) => sum + Math.pow(value - avg, 2), 0) /
           values.length,
       )
     : 0;
@@ -65,31 +65,31 @@ export default function NuclearMarkovLab() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }, []);
 
-  const runMonteCarlo = useCallback(() => {
-    const runs = [];
+  const runMonteCarloTrial = useCallback(() => {
+    const start = 12;
+    let final = 0;
 
-    for (let i = 0; i < 900; i += 1) {
-      const start = 12;
-      let final = 0;
+    for (let j = 0; j < start; j += 1) {
+      let active = true;
+      let guard = 0;
 
-      for (let j = 0; j < start; j += 1) {
-        let active = true;
-        while (active) {
-          const r = Math.random();
-          if (r < TRAVEL) continue;
-          if (r < TRAVEL + pAbsorb) active = false;
-          else {
-            active = false;
-            final += 2;
-          }
+      while (active && guard < 80) {
+        guard += 1;
+        const r = Math.random();
+
+        if (r < TRAVEL) continue;
+        if (r < TRAVEL + pAbsorb) {
+          active = false;
+        } else {
+          active = false;
+          final += 2;
         }
       }
-
-      runs.push(final / start);
     }
 
-    kDataRef.current = runs;
+    const runs = [...kDataRef.current, final / start].slice(-900);
     const avg = mean(runs);
+    kDataRef.current = runs;
     setStats((current) => ({
       ...current,
       kAvg: avg,
@@ -112,6 +112,12 @@ export default function NuclearMarkovLab() {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#05050a";
     ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = "rgba(224,224,224,0.36)";
+    ctx.font = "10px ui-monospace, monospace";
+    ctx.fillText(`k distribution (${data.length})`, 8, 14);
+
+    if (!data.length) return;
 
     data.forEach((value) => {
       const index = Math.floor((value / maxK) * bins);
@@ -137,16 +143,12 @@ export default function NuclearMarkovLab() {
       const k = (x / width) * maxK;
       const density =
         (1 / (sigma * Math.sqrt(2 * Math.PI))) *
-        Math.exp(-0.5 * ((k - avg) / sigma) ** 2);
+        Math.exp(-0.5 * Math.pow((k - avg) / sigma, 2));
       const y = height - 12 - density * 28;
       if (x === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
-
-    ctx.fillStyle = "rgba(224,224,224,0.36)";
-    ctx.font = "10px ui-monospace, monospace";
-    ctx.fillText("k distribution", 8, 14);
   }, []);
 
   const drawGrowth = useCallback(() => {
@@ -197,7 +199,8 @@ export default function NuclearMarkovLab() {
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
-    ctx.fillStyle = "rgba(0,0,0,0.24)";
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#05050a";
     ctx.fillRect(0, 0, width, height);
 
     particlesRef.current.forEach((particle) => {
@@ -231,10 +234,12 @@ export default function NuclearMarkovLab() {
   const resetAll = useCallback(() => {
     particlesRef.current = [];
     historyRef.current = [];
+    kDataRef.current = [];
     frameRef.current = 0;
-    runMonteCarlo();
-    setStats((current) => ({ ...current, neutrons: 0 }));
-  }, [runMonteCarlo]);
+    setStats({ kAvg: 0, neutrons: 0, sigma: 0 });
+    drawHistogram();
+    drawGrowth();
+  }, [drawGrowth, drawHistogram]);
 
   useEffect(() => {
     pausedRef.current = paused;
@@ -255,15 +260,12 @@ export default function NuclearMarkovLab() {
 
   useEffect(() => {
     const resize = () => {
-      [simRef.current, growthRef.current, histRef.current].forEach(
-        resizeCanvas,
-      );
+      [simRef.current, growthRef.current, histRef.current].forEach(resizeCanvas);
       drawHistogram();
       drawGrowth();
     };
 
     resize();
-    runMonteCarlo();
     window.addEventListener("resize", resize);
 
     const tick = () => {
@@ -278,7 +280,13 @@ export default function NuclearMarkovLab() {
           particle.x += particle.vx;
           particle.y += particle.vy;
 
-          if (particle.y < 2 || particle.y > height - 2) particle.vy *= -1;
+          if (particle.y < 2) {
+            particle.y = 2;
+            particle.vy = Math.abs(particle.vy);
+          } else if (particle.y > height - 2) {
+            particle.y = height - 2;
+            particle.vy = -Math.abs(particle.vy);
+          }
 
           if (Math.random() < 0.05) {
             const r = Math.random();
@@ -297,7 +305,9 @@ export default function NuclearMarkovLab() {
             }
           }
 
-          if (particle.x > width) particle.active = false;
+          if (particle.x > width) {
+            particle.active = false;
+          }
         }
 
         particlesRef.current = particles.filter((particle) => particle.active);
@@ -307,10 +317,15 @@ export default function NuclearMarkovLab() {
           historyRef.current.push(particlesRef.current.length);
           if (historyRef.current.length > 280) historyRef.current.shift();
         }
+
+        if (autoRun && frameRef.current % 6 === 0) {
+          runMonteCarloTrial();
+        }
       }
 
       drawSimulation();
       drawGrowth();
+      drawHistogram();
 
       if (frameRef.current % 8 === 0) {
         setStats((current) => ({
@@ -330,17 +345,20 @@ export default function NuclearMarkovLab() {
       if (autoRef.current) clearInterval(autoRef.current);
     };
   }, [
+    autoRun,
     drawGrowth,
     drawHistogram,
     drawSimulation,
     pAbsorb,
     resizeCanvas,
-    runMonteCarlo,
+    runMonteCarloTrial,
   ]);
 
   useEffect(() => {
-    runMonteCarlo();
-  }, [runMonteCarlo]);
+    kDataRef.current = [];
+    setStats((current) => ({ ...current, kAvg: 0, sigma: 0 }));
+    drawHistogram();
+  }, [drawHistogram, pAbsorb]);
 
   useEffect(() => {
     drawHistogram();
@@ -380,27 +398,21 @@ export default function NuclearMarkovLab() {
         </table>
 
         <div className="nuclear-markov__matrix-note">
-          <h3>Անցման Մատրից P — ինչպես կարդալ</h3>
-          <p>
-            Տողը ներկա վիճակն է, սյունակը՝ հաջորդ վիճակը։ Միայն Tr տողն է
-            դինամիկ փոխվում սլայդերով․ Ab և Fi վիճակները կլանող են։
-          </p>
+          <h3>States</h3>
 
           <section>
-            <b>1. Tr — Traveling / Ազատ շարժում</b>
-            <span>Tr → Tr: շարունակում է շարժվել։</span>
-            <span>Tr → Ab: կլանվում է առանց տրոհման։</span>
-            <span>Tr → Fi: տրոհում է առաջացնում և ծնվում են 2 նոր նեյտրոններ։</span>
+            <b>Tr - Traveling</b>
+            <span>Active neutron movement through the reactor surface.</span>
           </section>
 
           <section>
-            <b>2. Ab — Absorbed / Կլանված</b>
-            <span>Կլանող վիճակ է․ Ab → Ab = 1, վերադարձ չկա։</span>
+            <b>Ab - Absorbed</b>
+            <span>Absorbed neutron; this chain branch stops.</span>
           </section>
 
           <section>
-            <b>3. Fi — Fission / Տրոհում</b>
-            <span>Տրոհման ակտը գրանցվում է, իսկ նոր նեյտրոնները սկսում են Tr-ից։</span>
+            <b>Fi - Fission</b>
+            <span>Fission event; the branch creates two new neutron paths.</span>
           </section>
         </div>
 
@@ -448,9 +460,6 @@ export default function NuclearMarkovLab() {
       </div>
 
       <div className="nuclear-markov__right nuclear-markov__card">
-        <br />
-        <br />
-        <br />
         <p>Հավանականության փոփոխություն</p>
         <label className="nuclear-markov__slider">
           <span>

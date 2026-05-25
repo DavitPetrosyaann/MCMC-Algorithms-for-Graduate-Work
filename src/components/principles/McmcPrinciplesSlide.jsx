@@ -67,24 +67,13 @@ export default function McmcPrinciplesSlide() {
         </section>
 
         <aside className="mcmc-principles__side">
-          <div className="mcmc-principles__flow" aria-hidden="true">
-            <b>sample</b>
-            <i />
-            <b>move</b>
-            <i />
-            <b>converge</b>
-          </div>
-
           <div className="mcmc-principles__mixing">
-            <h2>Burn-in & Mixing</h2>
+            <h2>Burn-in</h2>
             <p>
-              Սկզբնական քայլերը հաճախ հեռացվում են, իսկ լավ mixing-ը օգնում է,
-              որ նմուշները ծածկեն ամբողջ բաշխումը։
+              Շղթայի սկզբնական հատվածը հաճախ կախված է մեկնարկային վիճակից, դրա
+              համար առաջին քայլերը (burn-in) հեռացվում են՝ մինչև շղթան մոտենա
+              կայուն ռեժիմի։
             </p>
-            <div>
-              <span>bad mixing</span>
-              <span>good mixing</span>
-            </div>
           </div>
 
           <div className="mcmc-principles__apps">

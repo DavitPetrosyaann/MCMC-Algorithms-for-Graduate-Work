@@ -73,7 +73,7 @@ export default function MetropolisStepVisualizer() {
     const mean = values.reduce((sum, value) => sum + value, 0) / n;
     const variance =
       n > 1
-        ? values.reduce((sum, value) => sum + (value - mean) ** 2, 0) /
+        ? values.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) /
           (n - 1)
         : 0;
 
@@ -431,10 +431,10 @@ export default function MetropolisStepVisualizer() {
           <section className="mh-step__panel mh-step__panel--steps">
             <h2>Algorithm Steps</h2>
             {[
-              ["Current state x", "Start at the present chain position."],
-              ["Propose x'", "Draw a candidate near x using Gaussian noise."],
-              ["Compute alpha", "Compare p(x') against p(x)."],
-              ["Accept / reject", "Move to x' or repeat the old sample."],
+              ["Current state x"],
+              ["Propose x'"],
+              ["Compute alpha"],
+              ["Accept / reject"],
             ].map(([title, text], index) => (
               <div
                 className={[

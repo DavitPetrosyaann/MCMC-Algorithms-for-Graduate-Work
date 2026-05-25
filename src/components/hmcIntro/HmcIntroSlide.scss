@@ -55,6 +55,73 @@
   }
 }
 
+@keyframes hmcLeapfrogFlow {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+    opacity: 0.78;
+  }
+  50% {
+    transform: translateX(12px) translateY(-1px);
+    opacity: 1;
+  }
+}
+
+@keyframes hmcArcDraw {
+  from {
+    stroke-dashoffset: 80;
+    opacity: 0;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes hmcDotPop {
+  0% {
+    r: 0;
+    opacity: 0;
+  }
+  60% {
+    r: 5.5;
+    opacity: 1;
+  }
+  100% {
+    r: 4;
+    opacity: 1;
+  }
+}
+
+@keyframes hmcLeapfrogGlow {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 rgba(79, 142, 247, 0);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 26px rgba(79, 142, 247, 0.22),
+      0 0 18px rgba(79, 142, 247, 0.2);
+  }
+}
+
+@keyframes hmcLeapfrogSweep {
+  0% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.24;
+  }
+  80% {
+    opacity: 0.24;
+  }
+  100% {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+}
+
 .hmc-intro {
   position: relative;
   display: grid;
@@ -65,8 +132,16 @@
   overflow: hidden;
   padding: clamp(42px, 6vh, 76px) clamp(48px, 6vw, 96px);
   background:
-    radial-gradient(circle at 18% 18%, rgba(255, 216, 117, 0.12), transparent 32%),
-    radial-gradient(circle at 88% 74%, rgba(79, 142, 247, 0.18), transparent 34%),
+    radial-gradient(
+      circle at 18% 18%,
+      rgba(255, 216, 117, 0.12),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 88% 74%,
+      rgba(79, 142, 247, 0.18),
+      transparent 34%
+    ),
     #080910;
   color: #eef2ff;
 }
@@ -104,7 +179,11 @@
     border-radius: 999px;
     color: #ffd875;
     background: rgba(7, 8, 14, 0.62);
-    font: 800 0.82rem ui-monospace, SFMono-Regular, Consolas, monospace;
+    font:
+      800 0.82rem ui-monospace,
+      SFMono-Regular,
+      Consolas,
+      monospace;
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
@@ -154,7 +233,11 @@
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 26px 8px 26px 8px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.025)),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.095),
+      rgba(255, 255, 255, 0.025)
+    ),
     rgba(14, 16, 26, 0.88);
   box-shadow: 0 20px 54px rgba(0, 0, 0, 0.34);
   animation:
@@ -177,7 +260,11 @@
 
 .hmc-intro__cards span {
   color: #4f8ef7;
-  font: 900 0.72rem ui-monospace, SFMono-Regular, Consolas, monospace;
+  font:
+    900 0.72rem ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
   letter-spacing: 0.1em;
 }
 
@@ -232,6 +319,45 @@
   gap: 0.38em;
 }
 
+.hmc-intro__card--leapfrog .hmc-math,
+.hmc-intro__cards article:nth-child(3) .hmc-math {
+  position: relative;
+  overflow: hidden;
+  animation: hmcLeapfrogGlow 2.8s ease-in-out infinite;
+}
+
+.hmc-intro__card--leapfrog .hmc-math::after,
+.hmc-intro__cards article:nth-child(3) .hmc-math::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 28%,
+    rgba(79, 142, 247, 0.22) 50%,
+    transparent 72%
+  );
+  pointer-events: none;
+  animation: hmcLeapfrogSweep 2.4s ease-in-out infinite;
+}
+
+.hmc-intro__card--leapfrog .hmc-math--stack > span,
+.hmc-intro__cards article:nth-child(3) .hmc-math--stack > span {
+  display: block;
+  will-change: transform, opacity;
+  animation: hmcLeapfrogFlow 1.4s ease-in-out infinite;
+}
+
+.hmc-intro__card--leapfrog .hmc-math--stack > span:nth-child(2),
+.hmc-intro__cards article:nth-child(3) .hmc-math--stack > span:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.hmc-intro__card--leapfrog .hmc-math--stack > span:nth-child(3),
+.hmc-intro__cards article:nth-child(3) .hmc-math--stack > span:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
 .hmc-frac {
   display: inline-grid;
   text-align: center;
@@ -264,50 +390,115 @@
   padding: clamp(18px, 2vw, 26px);
 }
 
+@keyframes hmcBallGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px #ffd875) drop-shadow(0 0 10px #ffd87588);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px #4f8ef7) drop-shadow(0 0 20px #4f8ef788);
+  }
+}
+
+@keyframes hmcTrajDraw {
+  from {
+    stroke-dashoffset: 800;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes hmcStepPop {
+  0% {
+    r: 0;
+    opacity: 0;
+  }
+  60% {
+    r: 5;
+    opacity: 1;
+  }
+  100% {
+    r: 3.5;
+    opacity: 0.85;
+  }
+}
+
 .hmc-intro__orbit {
   display: grid;
   place-items: center;
   min-height: 0;
+  padding: 0;
+  overflow: hidden;
   background:
-    radial-gradient(circle, rgba(255, 216, 117, 0.15), transparent 34%),
+    radial-gradient(
+      circle at 50% 60%,
+      rgba(79, 142, 247, 0.12),
+      transparent 62%
+    ),
     rgba(14, 16, 26, 0.88);
+}
 
-  b {
-    width: 18px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: #ffd875;
-    box-shadow: 0 0 24px rgba(255, 216, 117, 0.7);
-    animation: hmcPulse 2.8s ease-in-out infinite;
+.hmc-orbit-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hmc-orbit-svg__landscape {
+  stroke: rgba(79, 142, 247, 0.5);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.hmc-orbit-svg__fill {
+  fill: url(#hmcLandGrad);
+}
+
+.hmc-orbit-svg__traj {
+  stroke: url(#hmcTrajGrad);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: hmcTrajDraw 3.2s ease-out infinite;
+}
+
+.hmc-orbit-svg__step {
+  fill: #4f8ef7;
+  opacity: 0;
+  animation: hmcStepPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: calc(0.5s + var(--k) * 0.44s);
+
+  &:nth-child(odd) {
+    fill: #ffd875;
+    filter: drop-shadow(0 0 3px #ffd875aa);
   }
 
-  i {
-    position: absolute;
-    width: calc(34% + var(--i, 1) * 16%);
-    aspect-ratio: 1;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 50%;
-    animation: hmcOrbit calc(9s + var(--i, 1) * 2s) linear infinite;
+  &:nth-child(even) {
+    filter: drop-shadow(0 0 3px #4f8ef7aa);
   }
+}
 
-  i:nth-of-type(1) {
-    --i: 1;
-  }
-
-  i:nth-of-type(2) {
-    --i: 2;
-  }
-
-  i:nth-of-type(3) {
-    --i: 3;
-  }
+.hmc-orbit-svg__ball {
+  fill: #ffd875;
+  animation: hmcBallGlow 1.6s ease-in-out infinite;
 }
 
 .hmc-intro__idea strong {
   display: block;
   margin-top: 14px;
   color: #3ddc84;
-  font: 900 0.8rem ui-monospace, SFMono-Regular, Consolas, monospace;
+  font:
+    900 0.8rem ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -323,6 +514,45 @@
     color: rgba(238, 242, 255, 0.75);
     font-size: 0.86rem;
   }
+}
+
+.hmc-leapfrog-anim {
+  display: block;
+  width: 100%;
+  max-height: 64px;
+  margin: 0 0 10px;
+  overflow: visible;
+}
+
+.hmc-leapfrog-anim__arc {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  opacity: 0;
+  animation: hmcArcDraw 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(0.3s + var(--k) * 0.28s);
+}
+
+.hmc-leapfrog-anim__dot {
+  r: 0;
+  opacity: 0;
+  animation: hmcDotPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: calc(0.18s + var(--k) * 0.28s);
+
+  /* subtle continuous pulse after appearing */
+  &:nth-child(odd) {
+    filter: drop-shadow(0 0 4px #ffd875);
+  }
+
+  &:nth-child(even) {
+    filter: drop-shadow(0 0 4px #4f8ef7);
+  }
+}
+
+.hmc-leapfrog-anim__label {
+  fill: rgba(238, 242, 255, 0.45);
+  font-size: 9px;
+  font-family: "Times New Roman", Georgia, serif;
+  font-style: italic;
 }
 
 @media (max-width: 1100px) {

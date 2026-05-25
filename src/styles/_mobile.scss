@@ -1,0 +1,666 @@
+@media (max-width: 760px) {
+  html {
+    scroll-padding-bottom: 86px;
+  }
+
+  body {
+    min-width: 320px;
+  }
+
+  .app {
+    overflow-x: hidden;
+  }
+
+  .cover-page,
+  .slide-anchor,
+  .section-slide {
+    min-height: 100svh;
+  }
+
+  .cover-page {
+    place-items: start center;
+    padding: 32px 18px 92px;
+  }
+
+  .slide {
+    width: 100%;
+    min-height: auto;
+    gap: 2rem;
+    padding: 0;
+  }
+
+  .cover-huge {
+    font-size: clamp(3.35rem, 16vw, 5.4rem);
+    line-height: 0.92;
+    letter-spacing: 0;
+  }
+
+  .cover-key-guide {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .cover-key-guide__group {
+    flex-wrap: wrap;
+  }
+
+  .cover-key-guide__item {
+    min-width: 112px;
+  }
+
+  .section-slide {
+    padding: 88px 18px 100px;
+  }
+
+  .section-slide h2 {
+    font-size: clamp(2.35rem, 13vw, 4.2rem);
+    letter-spacing: 0;
+  }
+
+  .section-slide--visualizer {
+    overflow: visible;
+  }
+
+  .intro-mcmc,
+  .history-timeline,
+  .mcmc-principles,
+  .mh-intro,
+  .gibbs-intro,
+  .hmc-intro,
+  .mh-gibbs-compare,
+  .conclusion-slide,
+  .references-thanks {
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    padding: 72px 18px 100px;
+  }
+
+  .intro-mcmc,
+  .mcmc-principles,
+  .mh-intro,
+  .gibbs-intro,
+  .hmc-intro,
+  .conclusion-slide,
+  .references-thanks {
+    display: block;
+  }
+
+  .history-timeline,
+  .mh-gibbs-compare {
+    grid-template-rows: auto;
+    gap: 22px;
+  }
+
+  .intro-mcmc h1,
+  .history-timeline__header h1,
+  .mcmc-principles__header h1,
+  .mh-intro__header h1,
+  .gibbs-intro__header h1,
+  .hmc-intro__header h1,
+  .mh-gibbs-compare__header h1,
+  .conclusion-slide__header h1,
+  .references-thanks__header h1 {
+    font-size: clamp(2.45rem, 13vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+
+  .intro-mcmc__lead,
+  .history-timeline__header p,
+  .mcmc-principles__header p,
+  .mh-intro__header p,
+  .gibbs-intro__header p,
+  .hmc-intro__header p,
+  .mh-gibbs-compare__header p,
+  .conclusion-slide__header p,
+  .references-thanks__header p {
+    width: auto;
+    max-width: none;
+    font-size: 1rem;
+    line-height: 1.55;
+    white-space: normal;
+  }
+
+  .intro-mcmc__eyebrow,
+  .history-timeline__header span,
+  .mcmc-principles__header span,
+  .mh-intro__header span,
+  .gibbs-intro__header span,
+  .hmc-intro__header span,
+  .mh-gibbs-compare__header span,
+  .conclusion-slide__header span,
+  .references-thanks__header span {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .intro-mcmc__cards,
+  .history-timeline__items,
+  .mcmc-principles__content,
+  .mcmc-principles__cards,
+  .mcmc-principles__side,
+  .mh-intro__content,
+  .mh-intro__cards,
+  .mh-intro__side,
+  .gibbs-intro__content,
+  .gibbs-intro__cards,
+  .gibbs-intro__side,
+  .hmc-intro__content,
+  .hmc-intro__cards,
+  .hmc-intro__side,
+  .mh-gibbs-compare__content,
+  .conclusion-slide__content,
+  .conclusion-slide__cards,
+  .references-thanks__content,
+  .references-thanks__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 14px;
+    margin-top: 22px;
+    min-height: 0;
+  }
+
+  .intro-mcmc__cards article,
+  .history-timeline__items article,
+  .mcmc-principles__cards article,
+  .mcmc-principles__side > *,
+  .mh-intro__cards article,
+  .mh-intro__side > *,
+  .gibbs-intro__cards article,
+  .gibbs-intro__side > *,
+  .hmc-intro__cards article,
+  .hmc-intro__side > *,
+  .mh-gibbs-compare__column,
+  .mh-gibbs-compare__table,
+  .conclusion-slide__cards article,
+  .conclusion-slide__takeaway,
+  .references-thanks__list article,
+  .references-thanks__thanks {
+    min-height: 0;
+  }
+
+  .intro-mcmc__visual,
+  .history-timeline__line,
+  .mcmc-principles__particles,
+  .mh-intro__particles,
+  .gibbs-intro__particles,
+  .hmc-intro__particles,
+  .mh-gibbs-compare__particles,
+  .conclusion-slide__particles,
+  .references-thanks__particles {
+    display: none;
+  }
+
+  .mcmc-principles__flow,
+  .gibbs-intro__diagram,
+  .hmc-intro__orbit,
+  .conclusion-slide__ring,
+  .references-thanks__atom {
+    min-height: 180px;
+  }
+
+  .mh-gibbs-compare__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .mh-gibbs-compare__takeaway {
+    justify-self: stretch;
+    margin-top: 0;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .cover-meta,
+  .thesis-meta-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-height: none !important;
+    margin-top: 18px !important;
+    overflow: visible !important;
+  }
+
+  .thesis-meta-card {
+    height: auto !important;
+    min-height: 128px !important;
+    padding: 18px !important;
+  }
+
+  .thesis-meta-label {
+    font-size: 0.82rem !important;
+  }
+
+  .thesis-meta-value {
+    font-size: clamp(1.35rem, 7vw, 2rem) !important;
+    line-height: 1.12 !important;
+  }
+
+  .mc-lab,
+  .markov-suite,
+  .markov-chain,
+  .nuclear-markov,
+  .mh-suite,
+  .mh-step,
+  .mh-view,
+  .gibbs-sampling,
+  .hmc-visualizer {
+    height: auto !important;
+    min-height: 100svh !important;
+    overflow: visible !important;
+  }
+
+  .mc-lab {
+    grid-template-columns: 1fr;
+    padding-bottom: 92px;
+  }
+
+  .mc-lab__nav {
+    position: sticky;
+    top: 0;
+    z-index: 12;
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 10px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .mc-lab__brand {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+  }
+
+  .mc-lab__nav button {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    border-left: 0;
+    border-bottom: 3px solid transparent;
+    text-align: center;
+  }
+
+  .mc-lab__nav button.active {
+    border-bottom-color: var(--mc-accent);
+  }
+
+  .mc-lab__main,
+  .mc-page,
+  .mc-viz,
+  .mc-controls {
+    overflow: visible;
+  }
+
+  .mc-page {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding: 12px;
+  }
+
+  .mc-viz {
+    min-height: 330px;
+  }
+
+  .mc-stack {
+    height: auto;
+  }
+
+  .markov-suite {
+    grid-template-rows: auto 1fr;
+    padding-bottom: 92px;
+  }
+
+  .markov-suite__header {
+    padding: 64px 18px 14px;
+  }
+
+  .markov-suite__header span {
+    width: auto;
+  }
+
+  .markov-suite__header h1 {
+    font-size: clamp(1.7rem, 8vw, 2.55rem);
+  }
+
+  .markov-suite__header p {
+    max-width: none;
+  }
+
+  .markov-suite__switch,
+  .mh-suite__switch {
+    position: sticky;
+    top: 8px;
+    left: auto;
+    right: auto;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    margin: 8px auto;
+    overflow-x: auto;
+    transform: none;
+  }
+
+  .markov-suite__view {
+    height: auto;
+    overflow: visible;
+    padding: 0 12px 12px;
+  }
+
+  .markov-suite__view > *,
+  .markov-chain__layout,
+  .nuclear-markov,
+  .mh-view,
+  .mh-grid,
+  .gibbs-sampling {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .markov-chain {
+    padding: 12px;
+  }
+
+  .markov-chain__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .markov-diagram-wrap,
+  .markov-matrix-grid,
+  .markov-simulator {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .markov-matrix-grid,
+  .markov-bottom-row,
+  .markov-simulator,
+  .markov-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .markov-card,
+  .markov-diagram-wrap {
+    overflow-x: auto;
+  }
+
+  .nuclear-markov {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .nuclear-markov__center {
+    grid-template-rows: auto;
+  }
+
+  .nuclear-markov__card {
+    min-height: 240px;
+  }
+
+  .nuclear-markov__buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .mh-suite {
+    padding-bottom: 92px;
+  }
+
+  .mh-step {
+    grid-template-rows: auto auto;
+  }
+
+  .mh-step__header {
+    flex-direction: column;
+    gap: 4px;
+    padding: 54px 14px 12px;
+  }
+
+  .mh-step__header h1 {
+    font-size: 1.15rem;
+  }
+
+  .mh-step__body {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(320px, 56svh) auto;
+    min-height: 0;
+  }
+
+  .mh-step__canvas-panel {
+    border-right: 0;
+  }
+
+  .mh-step__sidebar {
+    display: grid !important;
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    overflow: visible;
+    border-top: 1px solid var(--mh-border);
+  }
+
+  .mh-step__panel {
+    overflow: visible;
+    padding: 12px;
+  }
+
+  .mh-step__formula {
+    font-size: 0.9rem;
+    white-space: normal;
+  }
+
+  .mh-step__sample-values {
+    max-height: 150px;
+    overflow: auto;
+  }
+
+  .mh-step__canvas-label,
+  .mh-step__counters {
+    max-width: calc(100% - 24px);
+    font-size: 0.5rem;
+  }
+
+  .mh-step__counters {
+    top: auto;
+    left: 12px;
+    right: auto;
+    bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .mh-view {
+    display: block;
+    padding: 54px 10px 92px;
+  }
+
+  .mh-header {
+    flex-direction: column;
+  }
+
+  .mh-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 10px 0 0;
+  }
+
+  .mh-sidebar,
+  .mh-charts,
+  .mh-chart-card,
+  .mh-live,
+  .mh-steps {
+    overflow: visible;
+  }
+
+  .mh-chart-wrap {
+    min-height: 260px;
+  }
+
+  .gibbs-sampling {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(360px, 62svh) auto auto !important;
+    gap: 10px;
+    padding: 54px 10px 92px !important;
+  }
+
+  .gibbs-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px;
+  }
+
+  .gibbs-header h1 {
+    font-size: 24px;
+    white-space: normal !important;
+  }
+
+  .gibbs-rho {
+    flex-wrap: wrap !important;
+    gap: 8px;
+    margin-left: 0;
+  }
+
+  .gibbs-rho__desc {
+    min-width: 0;
+  }
+
+  .gibbs-canvas-wrap,
+  .gibbs-panel,
+  .gibbs-bottom {
+    grid-column: 1 !important;
+  }
+
+  .gibbs-canvas-wrap {
+    grid-row: 2 !important;
+  }
+
+  .gibbs-panel {
+    grid-row: 3 !important;
+    overflow: visible !important;
+  }
+
+  .gibbs-arrays {
+    max-height: 320px;
+  }
+
+  .gibbs-bottom {
+    grid-row: 4 !important;
+    flex-wrap: nowrap;
+    overflow-x: auto !important;
+  }
+
+  .hmc-visualizer {
+    --hmc-hdr: auto;
+    --hmc-ctrl: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 54px 0 92px;
+  }
+
+  .hmc-header,
+  .hmc-controls,
+  .hmc-main {
+    position: static;
+  }
+
+  .hmc-header {
+    min-height: 48px;
+    flex-wrap: wrap;
+    height: auto;
+  }
+
+  .hmc-header h1 {
+    white-space: normal;
+  }
+
+  .hmc-controls {
+    height: auto;
+    min-height: 52px;
+  }
+
+  .hmc-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(360px, 62svh) auto auto;
+    min-height: 0;
+  }
+
+  .hmc-three {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 360px;
+  }
+
+  .hmc-sidebar {
+    grid-column: 1;
+    grid-row: 2;
+    flex-direction: column;
+    max-height: none;
+    border-top: 1px solid var(--hmc-border);
+    border-left: 0;
+  }
+
+  .hmc-panel {
+    min-height: 220px;
+    border-right: 0;
+    border-bottom: 1px solid var(--hmc-border);
+  }
+
+  .hmc-bottom {
+    grid-column: 1;
+    grid-row: 3;
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+
+  .hmc-algo,
+  .hmc-stats {
+    border: 0;
+    border-bottom: 1px solid var(--hmc-border);
+  }
+
+  .hmc-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .intro-mcmc,
+  .history-timeline,
+  .mcmc-principles,
+  .mh-intro,
+  .gibbs-intro,
+  .hmc-intro,
+  .mh-gibbs-compare,
+  .conclusion-slide,
+  .references-thanks {
+    padding-inline: 14px;
+  }
+
+  .intro-mcmc h1,
+  .history-timeline__header h1,
+  .mcmc-principles__header h1,
+  .mh-intro__header h1,
+  .gibbs-intro__header h1,
+  .hmc-intro__header h1,
+  .mh-gibbs-compare__header h1,
+  .conclusion-slide__header h1,
+  .references-thanks__header h1 {
+    font-size: clamp(2.15rem, 14vw, 3.55rem);
+  }
+
+  .nuclear-markov__buttons,
+  .hmc-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .mh-step__buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mh-step__panel--controls label {
+    grid-template-columns: 74px 1fr 24px;
+    font-size: 0.55rem;
+  }
+}

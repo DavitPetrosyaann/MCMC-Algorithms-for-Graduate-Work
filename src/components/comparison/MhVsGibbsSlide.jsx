@@ -1,14 +1,5 @@
 import "./MhVsGibbsSlide.scss";
 
-const rows = [
-  ["Move type", "proposed candidate", "conditional update"],
-  ["Accept / reject", "yes", "no"],
-  ["Needs proposal q", "yes", "no"],
-  ["Needs conditionals", "no", "yes"],
-  ["Generality", "very general", "more structured"],
-  ["Risk", "bad proposal → slow mixing", "strong dependence → slow movement"],
-];
-
 function MhFormula() {
   return (
     <div className="compare-math compare-math--stack">
@@ -123,20 +114,6 @@ export default function MhVsGibbsSlide() {
           <p>conditional distribution → update coordinate → always accept</p>
           <GibbsFormula />
           <strong>Հարմար է, երբ պայմանական բաշխումները հեշտ են։</strong>
-        </section>
-
-        <section className="mh-gibbs-compare__table">
-          {rows.map(([feature, mh, gibbs], index) => (
-            <div
-              className="mh-gibbs-compare__row"
-              key={feature}
-              style={{ "--i": index }}
-            >
-              <span>{feature}</span>
-              <b>{mh}</b>
-              <b>{gibbs}</b>
-            </div>
-          ))}
         </section>
       </main>
 

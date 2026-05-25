@@ -46,8 +46,8 @@ function formatSamples(samples) {
 
   const mx = samples.reduce((acc, sample) => acc + sample[0], 0) / n;
   const my = samples.reduce((acc, sample) => acc + sample[1], 0) / n;
-  const vx = n > 1 ? samples.reduce((acc, sample) => acc + (sample[0] - mx) ** 2, 0) / (n - 1) : 0;
-  const vy = n > 1 ? samples.reduce((acc, sample) => acc + (sample[1] - my) ** 2, 0) / (n - 1) : 0;
+  const vx = n > 1 ? samples.reduce((acc, sample) => acc + Math.pow(sample[0] - mx, 2), 0) / (n - 1) : 0;
+  const vy = n > 1 ? samples.reduce((acc, sample) => acc + Math.pow(sample[1] - my, 2), 0) / (n - 1) : 0;
 
   return {
     arrX: `[${xs.join(", ")}]`,
@@ -159,7 +159,7 @@ export default function Gibbs() {
     }
 
     function ease(t) {
-      return t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
     }
 
     function resizeCanvas() {

@@ -59,21 +59,21 @@ function makeGlowTexture(hexColor) {
 const colorStyles = [
   (t) =>
     new THREE.Color(
-      (20 + 220 * t ** 0.7) / 255,
-      (10 + 100 * t ** 1.5) / 255,
+      (20 + 220 * Math.pow(t, 0.7)) / 255,
+      (10 + 100 * Math.pow(t, 1.5)) / 255,
       (180 - 160 * t) / 255,
     ),
   (t) =>
     new THREE.Color(
       (5 + 80 * t * t) / 255,
-      (40 + 170 * t ** 0.6) / 255,
+      (40 + 170 * Math.pow(t, 0.6)) / 255,
       (80 + 130 * t) / 255,
     ),
   (t) =>
     new THREE.Color(
-      (20 + 150 * t ** 3) / 255,
+      (20 + 150 * Math.pow(t, 3)) / 255,
       (5 + 220 * t * t) / 255,
-      (30 + 200 * t ** 0.5) / 255,
+      (30 + 200 * Math.pow(t, 0.5)) / 255,
     ),
 ];
 
@@ -157,10 +157,10 @@ export default function useHmcSimulation({
     function U(x, y, dist = paramsRef.current.dist) {
       if (dist === 0) {
         const r = Math.sqrt(x * x + y * y);
-        return 2 * (r - 2.5) ** 2 + 0.15 * y * y;
+        return 2 * Math.pow(r - 2.5, 2) + 0.15 * y * y;
       }
-      if (dist === 1) return 0.3 * (x * x - 2.5) ** 2 + 0.4 * y * y;
-      return 0.5 * (y - 0.3 * x * x) ** 2 + 0.15 * x * x;
+      if (dist === 1) return 0.3 * Math.pow(x * x - 2.5, 2) + 0.4 * y * y;
+      return 0.5 * Math.pow(y - 0.3 * x * x, 2) + 0.15 * x * x;
     }
 
     function gradU(x, y) {
