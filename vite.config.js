@@ -7,5 +7,11 @@ const viteCacheDir = process.env.LOCALAPPDATA
 
 export default defineConfig({
   plugins: [react()],
+  base: "./",
   cacheDir: viteCacheDir,
+  build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    emptyOutDir: true,
+  },
 });
