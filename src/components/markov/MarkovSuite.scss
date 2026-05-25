@@ -1,0 +1,252 @@
+@keyframes markovSuiteFadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes markovSuiteGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 22px rgba(255, 216, 117, 0.12);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(79, 142, 247, 0.2);
+  }
+}
+
+@keyframes markovBackDrift {
+  from {
+    background-position:
+      0 0,
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      120px 0,
+      -160px 0,
+      0 0;
+  }
+}
+
+@keyframes markovParticleRise {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.6);
+  }
+  25%,
+  78% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-88vh) scale(1.1);
+  }
+}
+
+.markov-suite {
+  position: relative;
+  display: grid;
+  grid-template-rows: clamp(92px, 12vh, 124px) minmax(0, 1fr);
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 216, 117, 0.12), transparent 32%),
+    radial-gradient(circle at 88% 74%, rgba(79, 142, 247, 0.18), transparent 34%),
+    #080910;
+  color: #eef2ff;
+}
+
+.markov-suite::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, transparent 0 46%, rgba(255, 62, 96, 0.12) 47% 48%, transparent 49%),
+    linear-gradient(64deg, transparent 0 58%, rgba(61, 220, 132, 0.1) 59% 60%, transparent 61%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 24px,
+      rgba(255, 255, 255, 0.025) 24px 25px,
+      transparent 25px 52px
+    );
+  opacity: 0.75;
+  animation: markovBackDrift 12s linear infinite;
+}
+
+.markov-suite::after {
+  content: "Ձ Բ Ձ Բ Ձ Բ Ձ Բ Ձ Բ Ձ Բ Ձ Բ Ձ Բ Ձ Բ Ձ Բ";
+  position: absolute;
+  inset: auto 0 -16px;
+  z-index: 0;
+  color: rgba(255, 216, 117, 0.07);
+  font: 900 clamp(3rem, 7vw, 8rem) ui-monospace, SFMono-Regular, Consolas,
+    monospace;
+  letter-spacing: 0.32em;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: markovParticleRise 8.5s linear infinite;
+}
+
+.markov-suite__header {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: clamp(14px, 2.2vh, 22px) clamp(48px, 6vw, 96px) 8px;
+  animation: markovSuiteFadeDown 0.58s ease both;
+}
+
+.markov-suite__header span {
+  width: max-content;
+  margin-bottom: 10px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 216, 117, 0.3);
+  border-radius: 999px;
+  color: #ffd875;
+  background: rgba(7, 8, 14, 0.62);
+  font: 800 0.78rem ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.markov-suite__header h1 {
+  margin: 0;
+  color: #fff8e6;
+  font-size: clamp(1.65rem, 2.45vw, 3.25rem);
+  font-weight: 950;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  text-shadow:
+    0 0 34px rgba(255, 216, 117, 0.16),
+    0 5px 0 rgba(0, 0, 0, 0.34);
+}
+
+.markov-suite__header p {
+  max-width: min(1060px, 74vw);
+  margin: 8px 0 0;
+  color: rgba(238, 242, 255, 0.72);
+  font-size: clamp(0.78rem, 0.98vw, 1.08rem);
+  line-height: 1.4;
+}
+
+.markov-suite__view {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 clamp(18px, 2vw, 28px) clamp(16px, 2vh, 24px);
+}
+
+.markov-suite__view > * {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 26px 8px 26px 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.015)),
+    rgba(9, 10, 18, 0.72);
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.markov-suite__view > *::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 22%, rgba(255, 216, 117, 0.075), transparent 25%),
+    radial-gradient(circle at 82% 78%, rgba(79, 142, 247, 0.09), transparent 28%);
+}
+
+.markov-suite__switch {
+  position: absolute;
+  top: clamp(24px, 4vh, 38px);
+  right: clamp(64px, 7vw, 118px);
+  z-index: 20;
+  display: inline-flex;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(7, 8, 14, 0.78);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(12px);
+  animation: markovSuiteGlow 4s ease-in-out infinite;
+}
+
+.markov-suite__switch button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(238, 242, 255, 0.68);
+  cursor: pointer;
+  font: 850 0.66rem ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.07em;
+  padding: 9px 13px;
+  text-transform: uppercase;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.markov-suite__switch button:hover {
+  color: #fff8e6;
+  transform: translateY(-1px);
+}
+
+.markov-suite__switch button.is-active {
+  background: linear-gradient(135deg, #ffd875, #4f8ef7);
+  color: #080910;
+  box-shadow: 0 0 24px rgba(255, 216, 117, 0.2);
+}
+
+/* Visual continuity for the original Markov simulation without touching logic. */
+.markov-suite__view :is(.layout, .markov-chain, .markov, .markov-page) {
+  max-width: none !important;
+  height: 100% !important;
+  margin: 0 !important;
+  background: transparent !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.markov-suite__view :is(.header, .card, #diagram-wrap, .stat-box, .simulator, .matrix-card) {
+  border-color: rgba(255, 255, 255, 0.13) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(14, 16, 26, 0.74) !important;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.18) !important;
+}
+
+.markov-suite__view :is(.card-label, .seq-label, h2) {
+  color: #ffd875 !important;
+}
+
+@media (max-width: 1000px) {
+  .markov-suite {
+    grid-template-rows: 100px minmax(0, 1fr);
+  }
+
+  .markov-suite__switch {
+    right: 20px;
+  }
+}
