@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import SlideDeck from "./components/SlideDeck.jsx";
+import { applyMeta, previewMeta } from "./config/previewMeta.js";
 import { coverMeta, coverSlide, sectionSlides } from "./data/presentation.js";
 import useRevealOnInput from "./hooks/useRevealOnInput.js";
 import useSlideNavigation from "./hooks/useSlideNavigation.js";
@@ -37,6 +38,10 @@ export default function App() {
     goToNextSlide,
     goToPreviousSlide,
   } = useSlideNavigation(slides);
+
+  useEffect(() => {
+    applyMeta(previewMeta);
+  }, []);
 
   useEffect(() => {
     function handleKeyDown(event) {
